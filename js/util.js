@@ -1,3 +1,13 @@
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  AFTEREND: 'afterend',
+  BEFOREEND: 'beforeend',
+};
+
+const render = (container, component, place) => {
+  container.insertAdjacentHTML(place, component);
+};
+
 const validateArguments = (min, max) => {
   if (typeof min !== 'number' || typeof max !== 'number') {
     throw 'Передаваемые параметры должны быть числами';
@@ -10,6 +20,23 @@ const validateArguments = (min, max) => {
   if (min >= max) {
     throw 'Минимальное значение должно быть меньше максимального';
   }
+};
+
+/**
+ * Склонение слова в зависимости от числа
+ * Пример: declOfNum(count, ['баннер', 'баннера', 'баннеров']);
+ * @param n Число
+ * @param titles
+ * @return {*}
+ */
+const getWordForm = (n, titles) => {
+  return titles[
+    n % 10 === 1 && n % 100 !== 11
+      ? 0
+      : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)
+        ? 1
+        : 2
+  ];
 };
 
 /**
@@ -62,4 +89,12 @@ const getArrayWithRandomUniqueElements = (elements, size) => {
   return Array.from(uniqueElements);
 };
 
-export { getRandomIntInclusive, getRandomFloatInRange, getRandomArrayElement, getArrayWithRandomUniqueElements };
+export {
+  getArrayWithRandomUniqueElements,
+  getRandomIntInclusive,
+  getRandomFloatInRange,
+  getRandomArrayElement,
+  getWordForm,
+  render,
+  RenderPosition
+};

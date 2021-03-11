@@ -74,3 +74,5 @@ const createAdvertisements = (size) => {
 }
 
 createAdvertisements(ADVERTISEMENT_COUNT);
+
+export { createAdvertisements };
