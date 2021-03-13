@@ -1,3 +1,4 @@
+import './form.js';
 import { createAdvertisements } from './data.js';
 import {createPopup } from './popup.js';
 
