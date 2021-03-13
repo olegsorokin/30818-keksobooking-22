@@ -1,7 +1,7 @@
-const typeElement = document.querySelector('#type');
+const buildingTypeElement = document.querySelector('#type');
 const priceElement = document.querySelector('#price');
-const startTimeElement = document.querySelector('#timein');
-const endTimeElement = document.querySelector('#timeout');
+const timeInElement = document.querySelector('#timein');
+const timeOutElement = document.querySelector('#timeout');
 
 const MIN_PRICE = Object.freeze({
   bungalow: 0,
@@ -20,15 +20,15 @@ const onBuildingTypeChange = (evt) => {
 };
 
 const onTimeInChange = (evt) => {
-  endTimeElement.value = evt.target.value;
+  timeOutElement.value = evt.target.value;
 };
 
 const onTimeOutChange = (evt) => {
-  startTimeElement.value = evt.target.value;
+  timeInElement.value = evt.target.value;
 };
 
-typeElement.addEventListener('change', onBuildingTypeChange);
+buildingTypeElement.addEventListener('change', onBuildingTypeChange);
 
-startTimeElement.addEventListener('change', onTimeInChange);
+timeInElement.addEventListener('change', onTimeInChange);
 
-endTimeElement.addEventListener('change', onTimeOutChange);
+timeOutElement.addEventListener('change', onTimeOutChange);
