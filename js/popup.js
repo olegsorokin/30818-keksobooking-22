@@ -1,7 +1,7 @@
 import { getWordForm, render, RenderPosition } from './util.js';
 
-const roomWordForms = ['комната', 'комнаты', 'комнат'];
-const guestsWordForms = ['гость', 'гостя', 'гостей'];
+const ROOM_WORD_FORMS = ['комната', 'комнаты', 'комнат'];
+const GUESTS_WORD_FORMS = ['гость', 'гостя', 'гостей'];
 
 const Type = Object.freeze({
   flat: 'Квартира',
@@ -10,9 +10,26 @@ const Type = Object.freeze({
   palace: 'Дворец',
 });
 
-const mapElement = document.querySelector('#map-canvas');
 const cardTemplateContent = document.querySelector('#card').content;
 const popupElement = cardTemplateContent.querySelector('.popup');
+
+const createPhotos = (container, photos) => {
+  const textNode = photos
+    .map((photo) => `<img src="${photo}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`)
+    .join('\n');
+
+  container.innerHTML = '';
+  render(container, textNode, RenderPosition.BEFOREEND);
+};
+
+const createFeatures = (container, features) => {
+  const textNode = features
+    .map((feature) => `<li class="popup__feature popup__feature--${feature}"></li>`)
+    .join('\n');
+
+  container.innerHTML = '';
+  render(container, textNode, RenderPosition.BEFOREEND);
+};
 
 const createPopup = (advertisement) => {
   const {
@@ -30,34 +47,24 @@ const createPopup = (advertisement) => {
   } = advertisement.offer;
   const { avatar } = advertisement.author;
 
-  const element = popupElement.cloneNode(true);
-  const popupFeatures = element.querySelector('.popup__features');
-  const popupPhotos = element.querySelector('.popup__photos');
+  const popup = popupElement.cloneNode(true);
+  const popupFeatures = popup.querySelector('.popup__features');
+  const popupPhotos = popup.querySelector('.popup__photos');
+  const capacityTemplate = `${rooms} ${getWordForm(rooms, ROOM_WORD_FORMS)} для ${guests} ${getWordForm(guests, GUESTS_WORD_FORMS)}`;
 
-  const featuresTextNode = features
-    .map((feature) => `<li class="popup__feature popup__feature--${feature}"></li>`)
-    .join('\n');
-  const photosTextNode = photos
-    .map((photo) => `<img src="${photo}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`)
-    .join('\n');
+  popup.querySelector('.popup__avatar').src = avatar;
+  popup.querySelector('.popup__title').textContent = title;
+  popup.querySelector('.popup__text--address').textContent = address;
+  popup.querySelector('.popup__text--price').textContent = `${price} ₽/ночь`;
+  popup.querySelector('.popup__type').textContent = Type[type];
+  popup.querySelector('.popup__text--capacity').textContent = capacityTemplate;
+  popup.querySelector('.popup__text--time').textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
+  popup.querySelector('.popup__description').textContent = description;
 
-  const capacityTemplate = `${rooms} ${getWordForm(rooms, roomWordForms)} для ${guests} ${getWordForm(guests, guestsWordForms)}`;
+  createPhotos(popupPhotos, photos);
+  createFeatures(popupFeatures, features);
 
-  element.querySelector('.popup__avatar').src = avatar;
-  element.querySelector('.popup__title').textContent = title;
-  element.querySelector('.popup__text--address').textContent = address;
-  element.querySelector('.popup__text--price').textContent = `${price} ₽/ночь`;
-  element.querySelector('.popup__type').textContent = Type[type];
-  element.querySelector('.popup__text--capacity').textContent = capacityTemplate;
-  element.querySelector('.popup__text--time').textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
-  element.querySelector('.popup__description').textContent = description;
-
-  popupFeatures.innerHTML = '';
-  popupPhotos.innerHTML = '';
-  render(popupFeatures, featuresTextNode, RenderPosition.BEFOREEND);
-  render(popupPhotos, photosTextNode, RenderPosition.BEFOREEND);
-
-  mapElement.append(element);
+  return popup;
 };
 
 export { createPopup };
