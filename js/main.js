@@ -3,34 +3,57 @@ import {
   addMarkerToMap,
   addMainMarkerToMap,
   initializeMap,
-  setMapLoadHandler,
-  setMainMarkerMoveHandler
+  setMainMarkerMoveHandler,
+  setMainMarkerPosition
 } from './map.js';
-import { createAdvertisements } from './data.js';
-import { toggleDisablingFormElements, setAddress } from './form.js';
+import {
+  toggleDisablingFormElements,
+  setAddress,
+  setUserFormSubmit,
+  userFormResetHandler
+} from './form.js';
 import { toggleDisablingFilterElements } from './filter.js';
-
-const ADVERTISEMENTS_COUNT = 10;
-const advertisements = createAdvertisements(ADVERTISEMENTS_COUNT);
+import { getData } from './api.js';
+import { showAlert } from './alert.js';
 
 const setDisablingForm = (isActive) => {
   toggleDisablingFormElements(isActive);
   toggleDisablingFilterElements(isActive);
 };
 
-setMapLoadHandler(() => {
+const setMainMarkerDefaultPosition = () => {
+  setMainMarkerPosition(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
+  setTimeout(() => {
+    setAddress(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
+  }, 0);
+}
+
+setDisablingForm(true);
+initializeMap(() => {
   setDisablingForm(false);
 });
 
-setDisablingForm(true);
-initializeMap();
+getData(
+  (advertisements) => {
+    advertisements.forEach((point) => {
+      addMarkerToMap(point);
+    })
+  },
+  (message) => {
+    showAlert(message);
+  },
+);
 
 addMainMarkerToMap();
 setAddress(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
 setMainMarkerMoveHandler((evt) => {
   setAddress(evt.target.getLatLng().lat, evt.target.getLatLng().lng);
-})
+});
 
-advertisements.forEach((point) => {
-  addMarkerToMap(point);
+setUserFormSubmit(() => {
+  setMainMarkerDefaultPosition(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
+});
+
+userFormResetHandler(() => {
+  setMainMarkerDefaultPosition(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
 })

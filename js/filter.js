@@ -11,4 +11,11 @@ const toggleDisablingFilterElements = (isDisable) => {
   })
 };
 
-export { toggleDisablingFilterElements };
+const resetMapFilters = () => {
+  mapFiltersForm.reset();
+}
+
+export {
+  resetMapFilters,
+  toggleDisablingFilterElements
+};

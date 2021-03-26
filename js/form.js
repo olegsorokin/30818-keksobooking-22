@@ -1,3 +1,7 @@
+import { sendData } from './api.js';
+import { showErrorAlert, showSuccessAlert } from './alert.js';
+import { resetMapFilters } from './filter.js';
+
 const NODE_NAMES = ['BUTTON', 'INPUT', 'TEXTAREA', 'SELECT'];
 const MIN_PRICE = Object.freeze({
   bungalow: 0,
@@ -27,7 +31,7 @@ const toggleDisablingFormElements = (isDisable) => {
       element.disabled = isDisable;
     }
   })
-}
+};
 
 const setAddress = (lat, lng) => {
   addressInput.value = `${lat.toFixed(5)} ${lng.toFixed(5)}`;
@@ -137,7 +141,34 @@ roomNumberElement.addEventListener('change', (evt) => {
   }
 });
 
+const setUserFormSubmit = (onSuccess) => {
+  adFormElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData(
+      () => {
+        adFormElement.reset();
+        onSuccess();
+        showSuccessAlert();
+      },
+      () => {
+        showErrorAlert();
+      },
+      new FormData(evt.target),
+    );
+  });
+};
+
+const userFormResetHandler = (handler) => {
+  adFormElement.addEventListener('reset', () => {
+    resetMapFilters();
+    handler();
+  })
+};
+
 export {
   toggleDisablingFormElements,
-  setAddress
+  setAddress,
+  setUserFormSubmit,
+  userFormResetHandler
 };
