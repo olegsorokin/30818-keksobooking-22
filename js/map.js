@@ -8,7 +8,6 @@ const MARKER_START_POSITION = {
 const MAP_ZOOM = 10;
 const ICON_WIDTH = 52;
 const ICON_HEIGHT = 52;
-let onLoad = null;
 let map = null;
 
 const mainPinIcon = L.icon({
@@ -29,11 +28,7 @@ const mainMarker = L.marker(
     icon: mainPinIcon,
   });
 
-const setMapLoadHandler = (handler) => {
-  onLoad = handler;
-};
-
-const initializeMap = () => {
+const initializeMap = (onLoad) => {
   map = L.map('map-canvas')
     .on('load', () => {
       onLoad();
@@ -52,10 +47,11 @@ const addMainMarkerToMap = () => {
 };
 
 const addMarkerToMap = (point) => {
+  const { lat, lng } = point.location;
   const marker = L.marker(
     {
-      lat: point.offer.location.x,
-      lng: point.offer.location.y,
+      lat,
+      lng,
     }, {
       icon: pinIcon,
     });
@@ -76,11 +72,16 @@ const setMainMarkerMoveHandler = (handler) => {
   });
 };
 
+const setMainMarkerPosition = (lat, lng) => {
+  const newLatLng = new L.LatLng(lat, lng);
+  mainMarker.setLatLng(newLatLng);
+};
+
 export {
   MARKER_START_POSITION,
   addMarkerToMap,
   addMainMarkerToMap,
   setMainMarkerMoveHandler,
-  setMapLoadHandler,
+  setMainMarkerPosition,
   initializeMap
 };
