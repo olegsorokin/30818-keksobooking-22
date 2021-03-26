@@ -1,59 +1,76 @@
 import {
   MARKER_START_POSITION,
   addMarkerToMap,
-  addMainMarkerToMap,
   initializeMap,
   setMainMarkerMoveHandler,
-  setMainMarkerPosition
+  setMainMarkerPosition,
+  removeAllMarkers
 } from './map.js';
 import {
   toggleDisablingFormElements,
   setAddress,
-  setUserFormSubmit,
-  userFormResetHandler
+  setFormSubmitHandler,
+  setFormResetHandler
 } from './form.js';
-import { toggleDisablingFilterElements } from './filter.js';
+import { filterAdvertisements, setFilterChangeHandler, toggleDisablingFilterElements } from './filter.js';
 import { getData } from './api.js';
 import { showAlert } from './alert.js';
 
-const setDisablingForm = (isActive) => {
-  toggleDisablingFormElements(isActive);
-  toggleDisablingFilterElements(isActive);
-};
+const MAX_MARKS_COUNT = 10;
+let mapIsInitialized = false;
+let pointsList = [];
+let markersOnMap = [];
 
 const setMainMarkerDefaultPosition = () => {
   setMainMarkerPosition(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
   setTimeout(() => {
     setAddress(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
   }, 0);
-}
+};
 
-setDisablingForm(true);
+toggleDisablingFormElements(true);
+toggleDisablingFilterElements(true);
+
 initializeMap(() => {
-  setDisablingForm(false);
+  mapIsInitialized = true;
+  toggleDisablingFormElements(false);
+  setAddress(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
 });
 
 getData(
   (advertisements) => {
-    advertisements.forEach((point) => {
-      addMarkerToMap(point);
-    })
+    if (advertisements && advertisements.length) {
+      pointsList = advertisements;
+      toggleDisablingFilterElements(!mapIsInitialized);
+
+      markersOnMap = pointsList
+        .slice(0, MAX_MARKS_COUNT)
+        .map((point) => addMarkerToMap(point));
+    }
   },
   (message) => {
     showAlert(message);
   },
 );
 
-addMainMarkerToMap();
-setAddress(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
 setMainMarkerMoveHandler((evt) => {
   setAddress(evt.target.getLatLng().lat, evt.target.getLatLng().lng);
 });
 
-setUserFormSubmit(() => {
-  setMainMarkerDefaultPosition(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
+setFormSubmitHandler(() => {
+  setMainMarkerDefaultPosition();
 });
 
-userFormResetHandler(() => {
-  setMainMarkerDefaultPosition(MARKER_START_POSITION.lat, MARKER_START_POSITION.lng);
-})
+setFormResetHandler(() => {
+  setMainMarkerDefaultPosition();
+});
+
+setFilterChangeHandler(() => {
+  const filteredAdvertisements = filterAdvertisements(pointsList);
+
+  removeAllMarkers(markersOnMap);
+
+  markersOnMap = filteredAdvertisements
+    .slice(0, MAX_MARKS_COUNT)
+    .map((point) => addMarkerToMap(point));
+});

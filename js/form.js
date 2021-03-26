@@ -141,14 +141,14 @@ roomNumberElement.addEventListener('change', (evt) => {
   }
 });
 
-const setUserFormSubmit = (onSuccess) => {
+const setFormSubmitHandler = (handler) => {
   adFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     sendData(
       () => {
         adFormElement.reset();
-        onSuccess();
+        handler();
         showSuccessAlert();
       },
       () => {
@@ -159,7 +159,7 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-const userFormResetHandler = (handler) => {
+const setFormResetHandler = (handler) => {
   adFormElement.addEventListener('reset', () => {
     resetMapFilters();
     handler();
@@ -167,8 +167,8 @@ const userFormResetHandler = (handler) => {
 };
 
 export {
-  toggleDisablingFormElements,
   setAddress,
-  setUserFormSubmit,
-  userFormResetHandler
+  setFormSubmitHandler,
+  setFormResetHandler,
+  toggleDisablingFormElements
 };
