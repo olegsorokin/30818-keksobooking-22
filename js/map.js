@@ -8,7 +8,7 @@ const MARKER_START_POSITION = {
 const MAP_ZOOM = 10;
 const ICON_WIDTH = 52;
 const ICON_HEIGHT = 52;
-let map = null;
+const map = L.map('map-canvas');
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -29,10 +29,8 @@ const mainMarker = L.marker(
   });
 
 const initializeMap = (onLoad) => {
-  map = L.map('map-canvas')
-    .on('load', () => {
-      onLoad();
-    })
+  map
+    .on('load', onLoad)
     .setView(MARKER_START_POSITION, MAP_ZOOM);
 
   L.tileLayer(
@@ -40,9 +38,7 @@ const initializeMap = (onLoad) => {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
   ).addTo(map);
-};
 
-const addMainMarkerToMap = () => {
   mainMarker.addTo(map);
 };
 
@@ -64,6 +60,16 @@ const addMarkerToMap = (point) => {
         keepInView: true,
       },
     );
+
+  return marker;
+};
+
+const removeMarker = (marker) => {
+  map.removeLayer(marker);
+};
+
+const removeAllMarkers = (markers) => {
+  markers.forEach(removeMarker);
 };
 
 const setMainMarkerMoveHandler = (handler) => {
@@ -80,8 +86,8 @@ const setMainMarkerPosition = (lat, lng) => {
 export {
   MARKER_START_POSITION,
   addMarkerToMap,
-  addMainMarkerToMap,
+  initializeMap,
+  removeAllMarkers,
   setMainMarkerMoveHandler,
-  setMainMarkerPosition,
-  initializeMap
+  setMainMarkerPosition
 };
