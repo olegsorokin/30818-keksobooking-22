@@ -1,4 +1,7 @@
+/* global _:readonly */
+
 const NODE_NAMES = ['INPUT', 'SELECT'];
+const DEBOUNCE_TIMEOUT = 500;
 const Price = {
   'low': { MIN: 0, MAX: 9999 },
   'middle': { MIN: 10000, MAX: 50000 },
@@ -55,9 +58,10 @@ const resetMapFilters = () => {
 };
 
 const setFilterChangeHandler = (handler) => {
-  mapFiltersForm.addEventListener('change', () => {
-    handler();
-  });
+  mapFiltersForm.addEventListener('change', _.debounce(
+    handler,
+    DEBOUNCE_TIMEOUT,
+  ));
 };
 
 const filterAdvertisements = (advertisements) => {
