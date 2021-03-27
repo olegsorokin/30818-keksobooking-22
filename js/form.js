@@ -18,7 +18,7 @@ const adFormElement = document.querySelector('.ad-form');
 const titleInput = document.querySelector('#title');
 const addressInput = document.querySelector('#address');
 const buildingTypeElement = document.querySelector('#type');
-const priceElement = document.querySelector('#price');
+const priceInput = document.querySelector('#price');
 const timeInElement = document.querySelector('#timein');
 const timeOutElement = document.querySelector('#timeout');
 const roomNumberElement = document.querySelector('#room_number');
@@ -34,12 +34,12 @@ const toggleDisablingFormElements = (isDisable) => {
 };
 
 const setAddress = (lat, lng) => {
-  addressInput.value = `${lat.toFixed(5)} ${lng.toFixed(5)}`;
+  addressInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 };
 
 const setMinPrice = (price) => {
-  priceElement.placeholder = price;
-  priceElement.min = price;
+  priceInput.placeholder = price;
+  priceInput.min = price;
 };
 
 const onBuildingTypeChange = (evt) => {
@@ -98,17 +98,17 @@ titleInput.addEventListener('invalid', () => {
   }
 });
 
-priceElement.addEventListener('invalid', () => {
-  if (priceElement.validity.rangeOverflow) {
-    priceElement.setCustomValidity(`Цена должна быть не более ${PRICE_MAX} руб за ночь`);
-  } else if (priceElement.validity.rangeUnderflow) {
-    priceElement.setCustomValidity(`Цена должна быть не менее ${MIN_PRICE[buildingTypeElement.value]} руб за ночь`);
-  } else if (priceElement.validity.badInput) {
-    priceElement.setCustomValidity('Значение поля должно быть числом');
-  }  else if (priceElement.validity.valueMissing) {
-    priceElement.setCustomValidity('Обязательное поле');
+priceInput.addEventListener('invalid', () => {
+  if (priceInput.validity.rangeOverflow) {
+    priceInput.setCustomValidity(`Цена должна быть не более ${PRICE_MAX} руб за ночь`);
+  } else if (priceInput.validity.rangeUnderflow) {
+    priceInput.setCustomValidity(`Цена должна быть не менее ${MIN_PRICE[buildingTypeElement.value]} руб за ночь`);
+  } else if (priceInput.validity.badInput) {
+    priceInput.setCustomValidity('Значение поля должно быть числом');
+  } else if (priceInput.validity.valueMissing) {
+    priceInput.setCustomValidity('Обязательное поле');
   } else {
-    priceElement.setCustomValidity('');
+    priceInput.setCustomValidity('');
   }
 });
 
