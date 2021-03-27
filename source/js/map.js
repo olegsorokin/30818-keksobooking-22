@@ -13,13 +13,13 @@ const ICON_HEIGHT = 52;
 const map = L.map('map-canvas');
 
 const mainPinIcon = L.icon({
-  iconUrl: '../img/main-pin.svg',
+  iconUrl: 'img/main-pin.svg',
   iconSize: [ICON_WIDTH, ICON_HEIGHT],
   iconAnchor: [ICON_WIDTH / 2, ICON_HEIGHT],
 });
 
 const pinIcon = L.icon({
-  iconUrl: '../img/pin.svg',
+  iconUrl: 'img/pin.svg',
   iconSize: [ICON_WIDTH, ICON_HEIGHT],
   iconAnchor: [ICON_WIDTH / 2, ICON_HEIGHT],
 });
