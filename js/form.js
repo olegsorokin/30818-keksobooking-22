@@ -1,6 +1,7 @@
 import { sendData } from './api.js';
 import { showErrorAlert, showSuccessAlert } from './alert.js';
 import { resetMapFilters } from './filter.js';
+import { generateImage } from './util.js';
 
 const NODE_NAMES = ['BUTTON', 'INPUT', 'TEXTAREA', 'SELECT'];
 const MIN_PRICE = Object.freeze({
@@ -15,14 +16,29 @@ const PRICE_MAX = 1000000;
 let isTitleInputEvent = false; // Нужен для прерывания обработчика события invalid на поле ввода "Заголовок объявления"
 
 const adFormElement = document.querySelector('.ad-form');
+const avatarInput = document.querySelector('#avatar');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const photoInput = document.querySelector('#images');
+const photoPreview = document.querySelector('.ad-form__photo');
 const titleInput = document.querySelector('#title');
 const addressInput = document.querySelector('#address');
 const buildingTypeElement = document.querySelector('#type');
-const priceElement = document.querySelector('#price');
+const priceInput = document.querySelector('#price');
 const timeInElement = document.querySelector('#timein');
 const timeOutElement = document.querySelector('#timeout');
 const roomNumberElement = document.querySelector('#room_number');
 const capacityElement = document.querySelector('#capacity');
+
+const createPhotoPreview = () => {
+  const photoElement = document.createElement('img');
+  photoElement.width = 70;
+  photoElement.height = 70;
+  photoElement.style.objectFit = 'contain';
+  photoElement.style.borderRadius = '5px';
+  return photoElement;
+};
+
+const photoImage = createPhotoPreview();
 
 const toggleDisablingFormElements = (isDisable) => {
   adFormElement.classList.toggle('ad-form--disabled', isDisable);
@@ -34,12 +50,12 @@ const toggleDisablingFormElements = (isDisable) => {
 };
 
 const setAddress = (lat, lng) => {
-  addressInput.value = `${lat.toFixed(5)} ${lng.toFixed(5)}`;
+  addressInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 };
 
 const setMinPrice = (price) => {
-  priceElement.placeholder = price;
-  priceElement.min = price;
+  priceInput.placeholder = price;
+  priceInput.min = price;
 };
 
 const onBuildingTypeChange = (evt) => {
@@ -59,6 +75,18 @@ const capacityOptionsDisable = () => {
     option.disabled = true;
   }
 };
+
+avatarInput.addEventListener('change', (evt) => {
+  generateImage(avatarPreview, evt.target.files[0]);
+});
+
+photoInput.addEventListener('change', (evt) => {
+  generateImage(photoImage, evt.target.files[0]);
+
+  if (!photoPreview.contains(photoImage)) {
+    photoPreview.append(photoImage);
+  }
+});
 
 buildingTypeElement.addEventListener('change', onBuildingTypeChange);
 
@@ -98,17 +126,17 @@ titleInput.addEventListener('invalid', () => {
   }
 });
 
-priceElement.addEventListener('invalid', () => {
-  if (priceElement.validity.rangeOverflow) {
-    priceElement.setCustomValidity(`Цена должна быть не более ${PRICE_MAX} руб за ночь`);
-  } else if (priceElement.validity.rangeUnderflow) {
-    priceElement.setCustomValidity(`Цена должна быть не менее ${MIN_PRICE[buildingTypeElement.value]} руб за ночь`);
-  } else if (priceElement.validity.badInput) {
-    priceElement.setCustomValidity('Значение поля должно быть числом');
-  }  else if (priceElement.validity.valueMissing) {
-    priceElement.setCustomValidity('Обязательное поле');
+priceInput.addEventListener('invalid', () => {
+  if (priceInput.validity.rangeOverflow) {
+    priceInput.setCustomValidity(`Цена должна быть не более ${PRICE_MAX} руб за ночь`);
+  } else if (priceInput.validity.rangeUnderflow) {
+    priceInput.setCustomValidity(`Цена должна быть не менее ${MIN_PRICE[buildingTypeElement.value]} руб за ночь`);
+  } else if (priceInput.validity.badInput) {
+    priceInput.setCustomValidity('Значение поля должно быть числом');
+  } else if (priceInput.validity.valueMissing) {
+    priceInput.setCustomValidity('Обязательное поле');
   } else {
-    priceElement.setCustomValidity('');
+    priceInput.setCustomValidity('');
   }
 });
 
