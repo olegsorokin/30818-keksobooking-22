@@ -1,6 +1,7 @@
 import { sendData } from './api.js';
 import { showErrorAlert, showSuccessAlert } from './alert.js';
 import { resetMapFilters } from './filter.js';
+import { generateImage } from './util.js';
 
 const NODE_NAMES = ['BUTTON', 'INPUT', 'TEXTAREA', 'SELECT'];
 const MIN_PRICE = Object.freeze({
@@ -15,6 +16,10 @@ const PRICE_MAX = 1000000;
 let isTitleInputEvent = false; // Нужен для прерывания обработчика события invalid на поле ввода "Заголовок объявления"
 
 const adFormElement = document.querySelector('.ad-form');
+const avatarInput = document.querySelector('#avatar');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const photoInput = document.querySelector('#images');
+const photoPreview = document.querySelector('.ad-form__photo');
 const titleInput = document.querySelector('#title');
 const addressInput = document.querySelector('#address');
 const buildingTypeElement = document.querySelector('#type');
@@ -23,6 +28,17 @@ const timeInElement = document.querySelector('#timein');
 const timeOutElement = document.querySelector('#timeout');
 const roomNumberElement = document.querySelector('#room_number');
 const capacityElement = document.querySelector('#capacity');
+
+const createPhotoPreview = () => {
+  const photoElement = document.createElement('img');
+  photoElement.width = 70;
+  photoElement.height = 70;
+  photoElement.style.objectFit = 'contain';
+  photoElement.style.borderRadius = '5px';
+  return photoElement;
+};
+
+const photoImage = createPhotoPreview();
 
 const toggleDisablingFormElements = (isDisable) => {
   adFormElement.classList.toggle('ad-form--disabled', isDisable);
@@ -59,6 +75,18 @@ const capacityOptionsDisable = () => {
     option.disabled = true;
   }
 };
+
+avatarInput.addEventListener('change', (evt) => {
+  generateImage(avatarPreview, evt.target.files[0]);
+});
+
+photoInput.addEventListener('change', (evt) => {
+  generateImage(photoImage, evt.target.files[0]);
+
+  if (!photoPreview.contains(photoImage)) {
+    photoPreview.append(photoImage);
+  }
+});
 
 buildingTypeElement.addEventListener('change', onBuildingTypeChange);
 
