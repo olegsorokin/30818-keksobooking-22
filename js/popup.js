@@ -13,6 +13,10 @@ const Type = Object.freeze({
 const cardTemplateContent = document.querySelector('#card').content;
 const popupElement = cardTemplateContent.querySelector('.popup');
 
+const getCapacityTemplate = (rooms, guests) => {
+  return `${rooms} ${getWordForm(rooms, ROOM_WORD_FORMS)} для ${guests} ${getWordForm(guests, GUESTS_WORD_FORMS)}`;
+};
+
 const createPhotos = (container, photos) => {
   if (!photos.length) {
     return container.remove();
@@ -39,6 +43,14 @@ const createFeatures = (container, features) => {
   render(container, textNode, RenderPosition.BEFOREEND);
 };
 
+const addTextToElement = (element, text) => {
+  if (text === undefined || text === '') {
+    return element.remove();
+  }
+
+  element.textContent = text;
+};
+
 const createPopup = (advertisement) => {
   const {
     title,
@@ -58,16 +70,15 @@ const createPopup = (advertisement) => {
   const popup = popupElement.cloneNode(true);
   const popupFeatures = popup.querySelector('.popup__features');
   const popupPhotos = popup.querySelector('.popup__photos');
-  const capacityTemplate = `${rooms} ${getWordForm(rooms, ROOM_WORD_FORMS)} для ${guests} ${getWordForm(guests, GUESTS_WORD_FORMS)}`;
 
   popup.querySelector('.popup__avatar').src = avatar;
-  popup.querySelector('.popup__title').textContent = title;
-  popup.querySelector('.popup__text--address').textContent = address;
-  popup.querySelector('.popup__text--price').textContent = `${price} ₽/ночь`;
-  popup.querySelector('.popup__type').textContent = Type[type];
-  popup.querySelector('.popup__text--capacity').textContent = capacityTemplate;
-  popup.querySelector('.popup__text--time').textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
-  popup.querySelector('.popup__description').textContent = description;
+  addTextToElement(popup.querySelector('.popup__title'), title);
+  addTextToElement(popup.querySelector('.popup__text--address'), address);
+  addTextToElement(popup.querySelector('.popup__text--price'), `${price} ₽/ночь`);
+  addTextToElement(popup.querySelector('.popup__type'), Type[type]);
+  addTextToElement(popup.querySelector('.popup__text--capacity'), getCapacityTemplate(rooms, guests));
+  addTextToElement(popup.querySelector('.popup__text--time'), `Заезд после ${checkin}, выезд до ${checkout}`);
+  addTextToElement(popup.querySelector('.popup__description'), description);
 
   createPhotos(popupPhotos, photos);
   createFeatures(popupFeatures, features);
