@@ -76,6 +76,12 @@ const capacityOptionsDisable = () => {
   }
 };
 
+const resetPreviews = () => {
+  avatarPreview.src = 'img/muffin-grey.svg';
+  photoPreview.innerHTML = '';
+  photoImage.src = '';
+};
+
 avatarInput.addEventListener('change', (evt) => {
   generateImage(avatarPreview, evt.target.files[0]);
 });
@@ -190,6 +196,7 @@ const setFormSubmitHandler = (handler) => {
 const setFormResetHandler = (handler) => {
   adFormElement.addEventListener('reset', () => {
     resetMapFilters();
+    resetPreviews();
     handler();
   })
 };
