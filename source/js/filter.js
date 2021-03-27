@@ -1,4 +1,4 @@
-/* global _:readonly */
+import debounce from 'lodash/debounce';
 
 const NODE_NAMES = ['INPUT', 'SELECT'];
 const DEBOUNCE_TIMEOUT = 500;
@@ -58,7 +58,7 @@ const resetMapFilters = () => {
 };
 
 const setFilterChangeHandler = (handler) => {
-  mapFiltersForm.addEventListener('change', _.debounce(
+  mapFiltersForm.addEventListener('change', debounce(
     handler,
     DEBOUNCE_TIMEOUT,
   ));

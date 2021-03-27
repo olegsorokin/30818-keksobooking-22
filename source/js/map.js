@@ -1,4 +1,6 @@
-/* global L:readonly */
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
 import { createPopup } from './popup.js';
 
 const MARKER_START_POSITION = {
