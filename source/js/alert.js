@@ -63,10 +63,6 @@ const showErrorAlert = () => {
   mainElement.append(errorMessageElement);
 };
 
-/**
- * Функция рендеринга сообщения об ошибке
- * @param {String} message - Текст сообщения об ошибке
- */
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '1000';
